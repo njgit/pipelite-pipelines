@@ -22,4 +22,4 @@ n.sel=as.integer(names(stats$FDRs[as.character(m.sel), ][stats$FDRs[as.character
 UMRLMRsegments.gr <- segmentUMRsLMRs(m=meth.gr, meth.cutoff=m.sel,nCpG.cutoff=n.sel, PMDs=PMDsegments.gr,num.cores=17, myGenomeSeq=Mmusculus,seqLengths=sLengths, pdfFilename="[% methylseekr.UMRLMRsegments.pdf %]")
 plotFinalSegmentation(m=meth.gr, segs=UMRLMRsegments.gr,PMDs=PMDsegments.gr,meth.cutoff=m.sel, pdfFilename="[% methylseekr.finalsegmentation.pdf %]")
 saveUMRLMRSegments(segs=UMRLMRsegments.gr, GRangesFilename="[% methylseekr.UMRsLMRs_gr.rds %]", TableFilename="[% methylseekr.UMRsLMRs.tab %]")
-' | Rscript - > [% methylseekr.out.txt %]
+' | [% software.Rscript %] - > [% methylseekr.out.txt %]
