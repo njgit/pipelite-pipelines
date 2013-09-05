@@ -1,0 +1,10 @@
+#requires bismark_bedgraph
+methhist. echo '
+df <- read.delim("[% step0.bismark_bedgraph %]", stringsAsFactors=FALSE, header=FALSE)
+options(scipen=10)
+a.hist <- hist(df$V4,  col="cornflowerblue", breaks=10, plot=FALSE)
+my.labs=as.character(round(100*a.hist$counts/length(df$V4),1))
+png("[% methhist.methhist.png %]")
+hist(df$V4,  col="cornflowerblue",xlab=paste("% methylation per CpG"),main=paste("Histogram of % CpG Methylation"), breaks=10, labels=my.labs)
+dev.off()
+' | Rscript - > [% methhist.out.txt %]
