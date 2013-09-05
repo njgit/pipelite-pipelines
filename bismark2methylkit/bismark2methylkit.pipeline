@@ -1,4 +1,4 @@
 bismark_bedgraph_to_methylkit. perl -MNumber::Format -F"\t" -lane '
 BEGIN{ $numformat = new Number::Format; print join "\t", "chrBase", "chr", "base", "strand", "coverage", "freqC", "freqT";}
 { print join("\t", $F[0] . $F[1], $F[0],$F[1], "F", $F[4]+$F[5], $numformat->round($F[4]/($F[4]+$F[5]),2),$numformat->round($F[5]/($F[4]+$F[5]),2) ) unless $F[4]+$F[5] < 10
-}' [% step0.bismark_bedgraph %] > [% bismark_bedgraph_to_methylkit %]
+}' [% step0.bismark_bedgraph %] > [% bismark_bedgraph_to_methylkit.methylkit_compatible_file.txt %]
