@@ -1,3 +1,3 @@
-tabtobedfile. perl -F"\t" -lane 'BEGIN{$i=0;}print join "\t", $F[0],$F[1],$F[2],$F[3].$i++,$F[7]' [% step0.file1 %] | tail -n +2 > [% tabtobedfile.file1.bed %]
+tabtobedfile. perl -MMath::Round=round -F"\t" -lane 'BEGIN{$i=0;}print join "\t", $F[0],$F[1],$F[2],$F[3].$i++, $F[7] > 1000 ? 1000: round($F[7])' [% step0.file1 %] | tail -n +2 > [% tabtobedfile.file1.bed %]
 
 bed2bigBed. [% software.bedToBigBed %] -tab [% tabtobedfile.file1.bed %] [% input.mm10_chrom.sizes %] [% bed2bigBed.file1.bb %]
