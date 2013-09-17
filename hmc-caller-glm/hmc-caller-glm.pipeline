@@ -1,0 +1,5 @@
+convertbismarkformatbs. perl -F"\t" -lane 'print join "\t", @F[ 0 .. 3 ], $F[4], ($F[4]+$F[5]), "+"  ' [% step0.bs_file %] > [% convertbismarkformatbs.bs_file.tsv %]
+
+convertbismarkformatoxbs. perl -F"\t" -lane 'print join "\t", @F[ 0 .. 3 ], $F[4], ($F[4]+$F[5]), "+"  ' [% step0.oxbs_file %] > [% convertbismarkformatoxbs.oxbs_file.tsv %]
+
+bsmatrix. BSmatrix.py -i [% convertbismarkformatbs.bs_file.tsv %] [% convertbismarkformatoxbs.oxbs_file.tsv %] -p bsmat -o [% bsmatrix %] 
