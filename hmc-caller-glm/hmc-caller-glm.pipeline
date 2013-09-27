@@ -1,5 +1,18 @@
-convertbismarkformatbs. perl -F"\t" -lane 'print join "\t", @F[ 0 .. 3 ], $F[4], ($F[4]+$F[5]), "+"  ' [% step0.bs_file %] > [% convertbismarkformatbs.bs_file.tsv %]
+convertbismarkformatbs. zcat [% step0.bs_file %] | perl -F"\t" -lane 'print join "\t", @F[ 0 .. 3 ], $F[4], ($F[4]+$F[5]), "+"  ' > [% convertbismarkformatbs.bs_file.tsv %]
 
-convertbismarkformatoxbs. perl -F"\t" -lane 'print join "\t", @F[ 0 .. 3 ], $F[4], ($F[4]+$F[5]), "+"  ' [% step0.oxbs_file %] > [% convertbismarkformatoxbs.oxbs_file.tsv %]
+convertbismarkformatoxbs. zcat [% step0.oxbs_file %] | perl -F"\t" -lane 'print join "\t", @F[ 0 .. 3 ], $F[4], ($F[4]+$F[5]), "+"  ' > [% convertbismarkformatoxbs.oxbs_file.tsv %]
 
-bsmatrix. [% software.BSmatrix.py %] --input [% convertbismarkformatbs.bs_file.tsv %] [% convertbismarkformatoxbs.oxbs_file.tsv %] --prefix bsmat --outdir [% bsmatrix %] 
+bsmatrix. [% software.BSmatrix.py %] --input [% convertbismarkformatbs.bs_file.tsv %] [% convertbismarkformatoxbs.oxbs_file.tsv %] --prefix bsmat --outdir [% bsmatrix %]
+
+splitmatrix. cd [% bsmatrix %]; [% software.splitBSMatrix.py %] bsmat [% splitmatrix %]
+
+runGLM. cd [% splitmatrix %]; for chr in chrM chrX
+do
+  R CMD BATCH -design=[% step0.exp_design %] -outdir=[% runGLM %] -${chr} bsdata_glm_v1.R ${chr}/bsdata_glm.Rout
+done
+
+concatresult. cd [% splitmatrix %]; for f in `find . -name 'glmbs.txt' | sort`
+do
+    echo $f
+    tail -n+2 $f | gzip >> glmbs.txt.gz
+done
