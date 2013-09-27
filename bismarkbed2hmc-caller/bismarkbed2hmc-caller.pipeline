@@ -1,0 +1,1 @@
+convertbismarkformatbs. zcat [% step0.bismark_bedgraph_file %] | perl -F"\t" -lane 'print join "\t", @F[ 0 .. 3 ], $F[4], ($F[4]+$F[5]), "+"  ' > [% convertbismarkformatbs.bs_file.tsv %]
