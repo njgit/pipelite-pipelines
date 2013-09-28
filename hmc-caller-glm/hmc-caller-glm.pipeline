@@ -1,5 +1,5 @@
-bsmatrix. [% software.BSmatrix.py %] --input [% step0.bs_file %] [% step0.oxbs_file %] --prefix bsmat --outdir [% bsmatrix %]
-splitmatrix. cd [% bsmatrix %]; [% software.splitBSMatrix.py %] bsmat [% splitmatrix %]
+bsmatrix. python [% software.BSmatrix.py %] --input [% step0.bs_file %] [% step0.oxbs_file %] --prefix bsmat --outdir [% bsmatrix %]
+splitmatrix. cd [% bsmatrix %]; python [% software.splitBSMatrix.py %] bsmat [% splitmatrix %]
 runGLM. cd [% splitmatrix %]; 
 for chr in chrM chrX
 do
