@@ -1,2 +1,2 @@
-makebedgraph. perl -F"\t" -lane 'print join @F[ 0 .. 3 ] if $F[4] + $F[5] > 5' [% step0.bismark_bedgraph %] > [% makebedgraph.file1.bedgraph %]
+makebedgraph. zcat [% step0.bismark_bedgraph_file %] | perl -F"\t" -lane 'print join @F[ 0 .. 3 ] if $F[4] + $F[5] > 5' > [% makebedgraph.file1.bedgraph %]
 bedTobigwig. [% software.bedgraphToBigWig %] [% input.mm10_chrom.sizes %] [% makebedgraph.file1.bedgraph %] [% bedTobigwig.file1.bw %]
