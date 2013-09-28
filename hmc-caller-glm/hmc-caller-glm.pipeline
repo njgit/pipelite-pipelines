@@ -7,7 +7,7 @@ do
   R CMD BATCH -design=[% step0.exp_design %] -outdir=[% runGLM %] -${chr} bsdata_glm_v1.R ${chr}/bsdata_glm.Rout
 done
 
-concatresult. cd [% splitmatrix %]; for f in `find . -name 'glmbs.txt' | sort`
+concatresult. cd [% runGLM %]; for f in `find . -name 'glmbs.txt' | sort`
 do
     echo $f
     tail -n+2 $f | gzip >> glmbs.txt.gz
