@@ -1,11 +1,10 @@
-#convertbismarkformatbs. zcat [% step0.bs_file %] | perl -F"\t" -lane 'print join "\t", @F[ 0 .. 3 ], $F[4], ($F[4]+$F[5]), "+"  ' > [% convertbismarkformatbs.bs_file.tsv %]
-#convertbismarkformatoxbs. zcat [% step0.oxbs_file %] | perl -F"\t" -lane 'print join "\t", @F[ 0 .. 3 ], $F[4], ($F[4]+$F[5]), "+"  ' > [% convertbismarkformatoxbs.oxbs_file.tsv %]
 bsmatrix. [% software.BSmatrix.py %] --input [% step0.bs_file %] [% step0.oxbs_file %] --prefix bsmat --outdir [% bsmatrix %]
 splitmatrix. cd [% bsmatrix %]; [% software.splitBSMatrix.py %] bsmat [% splitmatrix %]
-runGLM. cd [% splitmatrix %]; for chr in chrM chrX
- do
+runGLM. cd [% splitmatrix %]; 
+for chr in chrM chrX
+do
   R CMD BATCH -design=[% step0.exp_design %] -outdir=[% runGLM %] -${chr} bsdata_glm_v1.R ${chr}/bsdata_glm.Rout
- done
+done
 
 concatresult. cd [% runGLM %]; for f in `find . -name 'glmbs.txt' | sort`
  do
