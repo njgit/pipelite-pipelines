@@ -1,6 +1,6 @@
 bsmatrix. python [% software.BSmatrix.py %] --input [% step0.bs_file %] [% step0.oxbs_file %] --names [% step0.desc %] [% step0.desc1 %] --prefix bsmat --outdir [% bsmatrix %]
 splitmatrix. cd [% bsmatrix %]; python [% software.splitBSMatrix.py %] bsmat [% splitmatrix %]
-runGLM. cd [% splitmatrix %]; bash [% software.runGLM.bash %] [% step0.exp_design %] [% runGLM %] chrM chrX chr12
+runGLM. cd [% splitmatrix %]; bash [% software.runGLM.bash %] [% step0.exp_design %] "[% runGLM %]" chrM chrX chr12
 concatresult. cd [% runGLM %]; for f in `find . -name 'glmbs.txt' | sort`
  do
     echo $f
