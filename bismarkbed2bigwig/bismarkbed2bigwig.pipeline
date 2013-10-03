@@ -5,10 +5,11 @@ bedTobigwig. [% software.bedgraphToBigWig %] [% makebedgraph.file1.bedgraph %] [
 cpfile. cp [% bedTobigwig.file1.bw %] /home/nw11/../hs523/public_html/UCSC/blueprint/bigWig/third-pass/t-cell/CpGs/[% step0.desc %].bw
 
 mktrackfile. echo '
-track [% step0.desc %]_BIS_SEQ_Blueprint_Pilot
-bigDataUrl http://jeremy-bio.sysbio.cam.ac.uk/UCSC/blueprint/bigWig/third-pass/t-cell/CpGs/[% step0.desc %].bw
-shortLabel [% step0.desc %]_CPG_BIS_SEQ
-longLabel [% step0.desc %]_CPG_BIS_SEQ
-type bigWig' > [% mktrackfile.file1.txt %]
+track [% step0.desc %]_T_BIS_SEQ_Blueprint
+bigDataUrl http://jeremy-bio.sysbiol.cam.ac.uk/UCSC/blueprint/bigWig/third-pass/t-cell/CpGs/[% step0.desc %].bw
+shortLabel [% step0.desc %]_T_CPG_BIS_SEQ
+longLabel [% step0.desc %]_T_CPG_BIS_SEQ
+type bigWig
+color 0,102,255' > [% mktrackfile.file1.txt %]
 
 cattrackfiles.once cat [% jobs.mktrackfile.file1.txt %] > [% global.ucschub.txt %]
