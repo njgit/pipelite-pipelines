@@ -1,4 +1,4 @@
-convertbismarkoutputtomethylseekrinput. perl -F"\t" -lane 'print join "\t", $F[0],$F[1], $F[4] + $F[5], $F[4]' [% step0.bismark_bedgraph %] > [% convertbismarkoutputtomethylseekrinput.converted.txt %]
+convertbismarkoutputtomethylseekrinput. zcat [% step0.bismark_bedgraph_file %] | perl -F"\t" -lane 'print join "\t", $F[0],$F[1], $F[4] + $F[5], $F[4]' > [% convertbismarkoutputtomethylseekrinput.converted.txt %]
 
 methylseekr. echo '
 library(MethylSeekR)
@@ -23,3 +23,4 @@ UMRLMRsegments.gr <- segmentUMRsLMRs(m=meth.gr, meth.cutoff=m.sel,nCpG.cutoff=n.
 plotFinalSegmentation(m=meth.gr, segs=UMRLMRsegments.gr,PMDs=PMDsegments.gr,meth.cutoff=m.sel, pdfFilename="[% methylseekr.finalsegmentation.pdf %]")
 saveUMRLMRSegments(segs=UMRLMRsegments.gr, GRangesFilename="[% methylseekr.UMRsLMRs_gr.rds %]", TableFilename="[% methylseekr.UMRsLMRs.tab %]")
 ' | [% software.Rscript %] - > [% methylseekr.out.txt %]
+methylseekr.output UMRsLMRs.tab PMDs.tab
