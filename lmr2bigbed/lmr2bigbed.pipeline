@@ -1,3 +1,13 @@
 tabtobedfile. perl -MMath::Round=round -F"\t" -lane 'BEGIN{$i=0;}print join "\t", $F[0],$F[1],$F[2],$F[3].$i++, $F[7] > 1000 ? 1000: round($F[7])' [% step0.file1 %] | tail -n +2 > [% tabtobedfile.file1.bed %]
 
+# Grep out LMR's to file 
+lmrbedfile. egrep 'LMR' [% tabtobedfile.file1.bed %] > [% lmrbedfile.lmr.bed %] 
+
+# Grep out UMR's to file
+umrbedfile. egrep 'UMR' [% tabtobedfile.file1.bed %] > [% umrbedfile.umr.bed %]
+
+# LMR bigbed
+bed2bigBed. [% software.bedToBigBed %] -tab [% tabtobedfile.file1.bed %] [% input.mm10_chrom.sizes %] [% bed2bigBed.file1.bb %]
+
+# UMR bigbed
 bed2bigBed. [% software.bedToBigBed %] -tab [% tabtobedfile.file1.bed %] [% input.mm10_chrom.sizes %] [% bed2bigBed.file1.bb %]
