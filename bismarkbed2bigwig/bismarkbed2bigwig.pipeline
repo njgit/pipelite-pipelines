@@ -2,14 +2,23 @@ makebedgraph. zcat [% step0.bismark_bedgraph_file %] | perl -MMath::Round=round 
 
 bedTobigwig. [% software.bedgraphToBigWig %] [% makebedgraph.file1.bedgraph %] [% input.mm10_chrom.sizes %] [% bedTobigwig.file1.bw %]
 
-cpfile. cp [% bedTobigwig.file1.bw %] /home/nw11/../hs523/public_html/UCSC/blueprint/bigWig/third-pass/t-cell/CpGs/[% step0.desc %].bw
+cpfile. cp [% bedTobigwig.file1.bw %] /home/nw11/../hs523/public_html/UCSC/blueprint/bigWig/third-pass/b-cell/CpGs/[% step0.desc %].bw
+#cpfile. cp [% bedTobigwig.file1.bw %] /home/nw11/../hs523/public_html/UCSC/blueprint/bigWig/third-pass/t-cell/CpGs/[% step0.desc %].bw
 
 mktrackfile. echo '
-track [% step0.desc %]_T_BIS_SEQ_Blueprint
-bigDataUrl http://jeremy-bio.sysbiol.cam.ac.uk/UCSC/blueprint/bigWig/third-pass/t-cell/CpGs/[% step0.desc %].bw
-shortLabel [% step0.desc %]_T_CPG_BIS_SEQ
-longLabel [% step0.desc %]_T_CPG_BIS_SEQ
+track [% step0.desc %]_B_BIS_SEQ_Blueprint
+bigDataUrl http://jeremy-bio.sysbiol.cam.ac.uk/UCSC/blueprint/bigWig/third-pass/b-cell/CpGs/[% step0.desc %].bw
+shortLabel [% step0.desc %]_B_CPG_BIS_SEQ
+longLabel [% step0.desc %]_B_CPG_BIS_SEQ
 type bigWig
-color 0,102,255' > [% mktrackfile.file1.txt %]
+color 0,204,0' > [% mktrackfile.file1.txt %]
+
+#mktrackfile. echo '
+#track [% step0.desc %]_T_BIS_SEQ_Blueprint
+#bigDataUrl http://jeremy-bio.sysbiol.cam.ac.uk/UCSC/blueprint/bigWig/third-pass/t-cell/CpGs/[% step0.desc %].bw
+#shortLabel [% step0.desc %]_T_CPG_BIS_SEQ
+#longLabel [% step0.desc %]_T_CPG_BIS_SEQ
+#type bigWig
+#color 0,102,255' > [% mktrackfile.file1.txt %]
 
 cattrackfiles.once cat [% jobs.mktrackfile.file1.txt %] > [% global.ucschub.txt %]
