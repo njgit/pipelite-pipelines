@@ -1,13 +1,38 @@
-tabtobedfile. perl -MMath::Round=round -F"\t" -lane 'BEGIN{$i=0;}print join "\t", $F[0],$F[1],$F[2],$F[3].$i++, $F[7] > 1000 ? 1000: round($F[7])' [% step0.file1 %] | tail -n +2 > [% tabtobedfile.file1.bed %]
-
+tabtobedfile. perl -MMath::Round=round -F"\t" -lane 'BEGIN{$i=0;}print join "\t", $F[0],$F[1],$F[2],$F[3].$i++, $F[7] > 1000 ? 1000: round($F[7]), $F[3] eq "LMR" ? "+" : "-"' [% step0.umrlmr.txt %] | tail -n +2 > [% tabtobedfile.file1.bed %]
 # Grep out LMR's to file 
-lmrbedfile. egrep 'LMR' [% tabtobedfile.file1.bed %] > [% lmrbedfile.lmr.bed %] 
-
+#lmrbedfile. egrep 'LMR' [% tabtobedfile.file1.bed %] > [% lmrbedfile.lmr.bed %] 
 # Grep out UMR's to file
-umrbedfile. egrep 'UMR' [% tabtobedfile.file1.bed %] > [% umrbedfile.umr.bed %]
-
+#umrbedfile. egrep 'UMR' [% tabtobedfile.file1.bed %] > [% umrbedfile.umr.bed %]
 # LMR bigbed
+#bed2bigBed. [% software.bedToBigBed %] -tab [% tabtobedfile.file1.bed %] [% input.mm10_chrom.sizes %] [% bed2bigBed.file1.bb %]
+# UMR bigbed
+#bed2bigBed. [% software.bedToBigBed %] -tab [% tabtobedfile.file1.bed %] [% input.mm10_chrom.sizes %] [% bed2bigBed.file1.bb %]
 bed2bigBed. [% software.bedToBigBed %] -tab [% tabtobedfile.file1.bed %] [% input.mm10_chrom.sizes %] [% bed2bigBed.file1.bb %]
 
-# UMR bigbed
-bed2bigBed. [% software.bedToBigBed %] -tab [% tabtobedfile.file1.bed %] [% input.mm10_chrom.sizes %] [% bed2bigBed.file1.bb %]
+# cp B-CELLS
+cpfile. cp [% bed2bigBed.file1.bb %] /home/nw11/../hs523/public_html/UCSC/blueprint/bigBed/third-pass/b-cell/methylseekr/[% step0.desc %].bb
+
+# cp T-CELLS
+#
+#
+#
+
+# mktrackfile B-CELLS
+mktrackfile. echo '
+track [% step0.desc %]_B_METH_REG_Blueprint
+bigDataUrl http://jeremy-bio.sysbiol.cam.ac.uk/UCSC/blueprint/bigBed/third-pass/b-cell/methylseekr/[% step0.desc %].bb
+shortLabel [% step0.desc %]_B_CPG_METH_REG
+longLabel [% step0.desc %]_B_CPG_METH_REG
+colorByStrand 255,128,0 255,0,255
+type bigWig' > [% mktrackfile.file1.txt %]
+
+# mktrackfile T-CELLS
+#mktrackfile. echo '
+#track [% step0.desc %]_T_METHREG_Blueprint
+#bigDataUrl http://jeremy-bio.sysbiol.cam.ac.uk/UCSC/blueprint/bigBed/third-pass/t-cell/CpGs/[% step0.desc %].bw
+#shortLabel [% step0.desc %]_T_CPG_METH_REG
+#longLabel [% step0.desc %]_T_CPG_METH_REG
+#type bigWig
+#color 0,204,0' > [% mktrackfile.file1.txt %]
+
+cattrackfiles.once cat [% jobs.mktrackfile.file1.txt %] > [% global.ucschub.txt %]
