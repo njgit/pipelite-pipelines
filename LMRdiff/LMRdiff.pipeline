@@ -2,4 +2,4 @@ tabtobedfile. perl -MMath::Round=round -F"\t" -lane 'BEGIN{$i=0;}print join "\t"
 
 lmrmerge. bedtools merge -d 50 -n -nms -scores collapse  -i [% tabtobedfile.file1.bed %] > [% lmrmerge.lmrmerge.tsv %]
 
-intersect.once bedtools multiinter -header -g [% input.mm10_chrom.sizes %] -empty -names [% jobs.step0.desc %] -i [% jobs.lmrmerge.tsv %] > [% intersect.multiintersect.txt %] 
+intersect.once bedtools multiinter -header -g [% input.mm10_chrom.sizes %] -empty -i [% jobs.lmrmerge.lmrmerge.tsv %] > [% intersect.multiintersect.txt %] 
