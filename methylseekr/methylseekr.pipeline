@@ -1,11 +1,11 @@
-convertbismarkoutputtomethylseekrinput. zcat [% step0.bismark_bedgraph_file %] | perl -F"\t" -lane 'print join "\t", $F[0],$F[1], $F[4] + $F[5], $F[4]' > [% convertbismarkoutputtomethylseekrinput.converted.txt %]
+convertbismarkoutputtomethylseekrinput. zcat [% step0.bismark_bedgraph_file %] | perl -F"\t" -lane 'print join "\t", $F[0],$F[1], $F[4] + $F[5], $F[4]' | grep -v '_' > [% convertbismarkoutputtomethylseekrinput.converted.txt %]
 
 methylseekr. echo '
 library(MethylSeekR)
 library("BSgenome.Mmusculus.UCSC.mm10")
 sLengths=seqlengths(Mmusculus)
 meth.gr <- readMethylome(FileName="[%  convertbismarkoutputtomethylseekrinput.converted.txt %]", seqLengths=sLengths)
-PMDsegments.gr <- segmentPMDs(m=meth.gr, chr.sel="chr1", seqLengths=sLengths, num.cores=10,pdfFilename="[% methylseekr.PMDsegments.alpha.plot %]")
+PMDsegments.gr <- segmentPMDs(m=meth.gr, chr.sel="chr1", seqLengths=sLengths, num.cores=6,pdfFilename="[% methylseekr.PMDsegments.alpha.plot %]")
 savePMDSegments(PMDs=PMDsegments.gr,GRangesFilename="[% methylseekr.PMDs_gr.rds %]", TableFilename="[% methylseekr.PMDs.tab %]")
 plotPMDSegmentation(m=meth.gr, segs=PMDsegments.gr, pdfFilename="[% methylseekr.PMDsegmentation.pdf %]")
 library(rtracklayer)
@@ -15,7 +15,7 @@ query <- ucscTableQuery(session, "cpgIslandExt")
 CpGislands.gr <- track(query, asRangedData = FALSE)
 genome(CpGislands.gr) <- NA
 CpGislands.gr <- suppressWarnings(resize(CpGislands.gr, 5000, fix="center"))
-stats <- calculateFDRs(m=meth.gr, CGIs=CpGislands.gr,PMDs=PMDsegments.gr, num.cores=20, pdfFilename="[% methylseekr.FDRstats.pdf %]")
+stats <- calculateFDRs(m=meth.gr, CGIs=CpGislands.gr,PMDs=PMDsegments.gr, num.cores=6, pdfFilename="[% methylseekr.FDRstats.pdf %]")
 FDR.cutoff <- 5
 m.sel <- 0.5
 n.sel=as.integer(names(stats$FDRs[as.character(m.sel), ][stats$FDRs[as.character(m.sel), ]<FDR.cutoff])[1])
