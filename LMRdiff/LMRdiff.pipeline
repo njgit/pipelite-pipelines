@@ -1,0 +1,1 @@
+lmrmerge. bedtools merge -d 50 -n -scores collapse  -i [% step0.bismark_bedgraph %] > [% lmrmerge.lmrmerge.tsv %] 
