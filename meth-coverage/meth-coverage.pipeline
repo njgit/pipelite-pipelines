@@ -1,0 +1,5 @@
+# Get coverage greater than X - report the total number of bases at this position
+makebedgraph. zcat [% step0.bismark_bedgraph_file %] | perl -F"\t" -lane 'print join "\t", $F[0], $F[1], $F[2]+1, "CPG".$i++, $F[4] + $F[5] if $F[4] + $F[5] > 5' > [% makebedgraph.file1.bedgraph %]
+
+# multi-intersect
+multiintersect.once bedtools multiint -header -g [% input.mm10_chrom.sizes %] -empty -i [% jobs.makebedgraph.file1.bedgraph %] > [% multiintersect.multiintersect.tsv %]
