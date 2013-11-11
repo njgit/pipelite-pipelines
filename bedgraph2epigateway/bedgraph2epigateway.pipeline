@@ -1,0 +1,10 @@
+bgzip. zcat [% step0.bismark_bedgraph %] | bgzip > [% bgzip.bismark_bedgraph.gz %]
+
+tabix. tabix -p bed [% bgzip.bismark_bedgraph.gz %]
+tabix.
+# cp the file and index across
+cp. cp [% bgzip.bismark_bedgraph.gz %] > ~/pub/EPIGATEWAY/blueprint/bedGraph/[% step0.desc %].bedgraph
+
+metadata. echo "[% step0.desc %] http://jeremy-bio.sysbiol.cam.ac.uk/EPIGATEWAY/blueprint/bedGraph/[% step0.desc %].bedgraph [% step0.phenotype %] [% step0.gender %] [% step0.cell_type %] [% step0.meth_type %]" > [% metadata.metadata.txt %]
+
+metadatacombine.once echo "desc url strain gender cell_type meth_type" > [% metadatacomine.metadata.txt %]; cat [% jobs.metadata.metadata.txt  %] > [% metadatacomine.metadata.txt %];  
