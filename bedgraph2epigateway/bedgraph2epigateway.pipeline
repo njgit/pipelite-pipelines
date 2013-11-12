@@ -1,9 +1,9 @@
 bgzip. zcat [% step0.bismark_bedgraph %] | bgzip > [% bgzip.bismark_bedgraph.gz %]
 
 tabix. tabix -f -p bed [% bgzip.bismark_bedgraph.gz %]
-tabix.output bismark_bedgraph.gz.tbi
+
 # cp the file and index across
-cp. cp [% bgzip.bismark_bedgraph.gz %] ~/pub/EPIGATEWAY/blueprint/bedGraph/[% step0.desc %].bedgraph.gz; cp [% tabix.output1 %] ~/pub/EPIGATEWAY/blueprint/bedGraph/[% step0.desc %].bedgraph.gz.tbi
+cp. cp [% bgzip.bismark_bedgraph.gz %] ~/pub/EPIGATEWAY/blueprint/bedGraph/[% step0.desc %].bedgraph.gz; cp [% bgzip %]/bismark_bedgraph.gz.tbi ~/pub/EPIGATEWAY/blueprint/bedGraph/[% step0.desc %].bedgraph.gz.tbi
 
 metadata. echo "[% step0.desc %] http://jeremy-bio.sysbiol.cam.ac.uk/EPIGATEWAY/blueprint/bedGraph/[% step0.desc %].bedgraph [% step0.phenotype %] [% step0.gender %] [% step0.cell_type %] [% step0.meth_type %]" > [% metadata.metadata.txt %]
 
