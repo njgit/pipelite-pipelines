@@ -1,10 +1,10 @@
-bgzip. zcat [% step0.bismark_bedgraph %] | sort -k1,1 -k2,2n  | bgzip > [% bgzip.bismark_bedgraph.gz %]
+bgzip. zcat [% step0.bismark_bedgraph %] | cut -f1,2,3,4 | sort -k1,1 -k2,2n  | bgzip > [% bgzip.bismark_bedgraph.gz %]
 
 tabix. tabix -f -p bed [% bgzip.bismark_bedgraph.gz %]
 
 # cp the file and index across
 cp. cp [% bgzip.bismark_bedgraph.gz %] ~/pub/EPIGATEWAY/blueprint/bedGraph/[% step0.desc %].bedgraph.gz; cp [% bgzip %]/bismark_bedgraph.gz.tbi ~/pub/EPIGATEWAY/blueprint/bedGraph/[% step0.desc %].bedgraph.gz.tbi
 
-metadata. echo "name=[% step0.desc %] url=http://jeremy-bio.sysbiol.cam.ac.uk/EPIGATEWAY/blueprint/bedGraph/[% step0.desc %].bedgraph strain=[% step0.phenotype %] sex=[% step0.gender %] celltype=[% step0.cell_type %] methtype=[% step0.meth_type %]" > [% metadata.metadata.txt %]
+metadata. echo "name=[% step0.desc %] url=http://jeremy-bio.sysbiol.cam.ac.uk/EPIGATEWAY/blueprint/bedGraph/[% step0.desc %].bedgraph strain=[% step0.phenotype %] sex=[% step0.gender %] celltype=[% step0.cell_type %] methtype=[% step0.meth_type %]" > [% metadata.metadata_txt %]
 
-metadatacombine.once echo "desc url strain gender cell_type meth_type" > [% metadatacombine.metadata.txt %]; cat [% jobs.metadata.metadata.txt  %] >> [% metadatacomine.metadata.txt %];  
+metadatacombine.once echo "desc url strain gender cell_type meth_type" > [% global.metadata.txt %]; cat [% jobs.metadata.metadata_txt  %] >> [% global.metadata.txt %];  
