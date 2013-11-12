@@ -1,6 +1,6 @@
 bgzip. zcat [% step0.bismark_bedgraph %] | bgzip > [% bgzip.bismark_bedgraph.gz %]
 
-tabix. tabix -p bed [% bgzip.bismark_bedgraph.gz %]
+tabix. tabix -f -p bed [% bgzip.bismark_bedgraph.gz %]
 tabix.output bismark_bedgraph.gz.tbi
 # cp the file and index across
 cp. cp [% bgzip.bismark_bedgraph.gz %] ~/pub/EPIGATEWAY/blueprint/bedGraph/[% step0.desc %].bedgraph.gz; cp [% tabix.output1 %] ~/pub/EPIGATEWAY/blueprint/bedGraph/[% step0.desc %].bedgraph.gz.tbi
