@@ -1,3 +1,3 @@
-bindata. zcat [% step0.bismark_bedgraph_file %] | awk '{print $5+$6 }' | [% software.hist_bins.pl %] [% step0.desc %] [% step0.replicate %] [% step0.fullphenotype %] > [% bindata.binned.tsv %]
+bindata. zcat [% step0.bismark_bedgraph %] | awk '{print $5+$6 }' | [% software.hist_bins.pl %] [% step0.desc %] [% step0.replicate %] [% step0.fullphenotype %] > [% bindata.binned.tsv %]
 
 combinedcoverage.once cat [% jobs.bindata.binned.tsv %] > [% combinedcoverage.combinedcoverage.tsv %]  
