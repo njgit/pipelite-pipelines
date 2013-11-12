@@ -1,4 +1,4 @@
-bgzip. zcat [% step0.bismark_bedgraph %] | bgzip > [% bgzip.bismark_bedgraph.gz %]
+bgzip. zcat [% step0.bismark_bedgraph %] | sort -k1,1 -k2,2  | gzip > [% bgzip.bismark_bedgraph.gz %]
 
 tabix. tabix -f -p bed [% bgzip.bismark_bedgraph.gz %]
 
