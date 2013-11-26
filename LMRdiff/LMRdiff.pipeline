@@ -1,5 +1,6 @@
 tabtobedfile. perl -MMath::Round=round -F"\t" -lane 'BEGIN{$i=0;}print join "\t", $F[0],$F[1],$F[2],$F[3].$i++, $F[7] > 1000 ? 1000: round($F[7]), $F[3] eq "LMR" ? "+" : "-"' [% step0.umrlmr.tab %] | tail -n +2 > [% tabtobedfile.file1.bed %]
 
-lmrmerge. bedtools merge -d 50 -n -nms -scores collapse  -i [% tabtobedfile.file1.bed %] > [% lmrmerge.lmrmerge.tsv %]
+# lmrmerge. bedtools merge -d 50 -n -nms -scores collapse  -i [% tabtobedfile.file1.bed %] > [% lmrmerge.lmrmerge.tsv %]
 
-intersect.once bedtools multiinter -header -g [% input.mm10_chrom.sizes %] -empty -i [% jobs.lmrmerge.lmrmerge.tsv %] > [% intersect.multiintersect.txt %] 
+#intersect.once bedtools multiinter -header -g [% input.mm10_chrom.sizes %] -empty -i [% jobs.lmrmerge.lmrmerge.tsv %] > [% intersect.multiintersect.txt %] 
+intersect.once bedtools multiinter -header -g [% input.mm10_chrom.sizes %] -empty -i [% jobs.tabtobedfil.file1.bed %] > [% intersect.multiintersect.txt %]
