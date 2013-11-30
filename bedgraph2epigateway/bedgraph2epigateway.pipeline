@@ -1,4 +1,4 @@
-bgzip. zcat [% step0.bismark_bedgraph %] | cut -f1,2,3,4 | sort -k1,1 -k2,2n  | bgzip > [% bgzip.bismark_bedgraph.gz %]
+bgzip. zcat [% step0.bismark_bedgraph %] | sort -k1,1 -k2,2n |  grep -v '_' | perl -F"\t" -lane 'print join "\t", $F[0],$F[1]-1,$F[2],$F[3]' | bgzip -c > [% bgzip.bismark_bedgraph.gz %]
 
 tabix. tabix -f -p bed [% bgzip.bismark_bedgraph.gz %]
 
