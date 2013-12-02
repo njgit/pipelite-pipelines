@@ -1,5 +1,5 @@
 converttomlmlbs.  zcat [% step0.bismark_bedgraph_bs %] | perl -F"\t" -lane 'print join "\t", $F[0], $F[1], $F[2], "CpG:" . ($F[4]+$F[5]), $F[4] / ($F[4] + $F[5]), "+"' | gzip > [% converttomlmlbs.mlml.tsv %]
 converttomlmlox.  zcat [% step0.bismark_bedgraph_ox %] | perl -F"\t" -lane 'print join "\t", $F[0], $F[1], $F[2], "CpG:" . ($F[4]+$F[5]), $F[4] / ($F[4] + $F[5]), "+"' | gzip > [% converttomlmlox.mlml.tsv %]
-commonpositionsbs. bedtools -wa -a <( zcat [% converttomlmlbs.mlml.tsv %] ) -b <( zcat [% converttomlmlox.mlml.tsv %]  ) | gzip > [% commonpositionsbs.tsv %]
-commonpositionsox. bedtools -wb -a <( zcat [% converttomlmlbs.mlml.tsv %] ) -b <( zcat [% converttomlmlox.mlml.tsv %]  ) | gzip > [% commonpositionsox.tsv %]
-mlml. [% software.mlml %] -bsseq <( zcat [% commonpositionsbs.tsv   %] ) -oxbsseq <( zcat [% commonpositionsox.tsv  %]) > [% mlml.mlml.tsv %]
+commonpositionsbs. bedtools intersect -wa -a <( zcat [% converttomlmlbs.mlml.tsv %] ) -b <( zcat [% converttomlmlox.mlml.tsv %]  ) | gzip > [% commonpositionsbs.bs.tsv %]
+commonpositionsox. bedtools intersect -wb -a <( zcat [% converttomlmlbs.mlml.tsv %] ) -b <( zcat [% converttomlmlox.mlml.tsv %]  ) | gzip > [% commonpositionsox.ox.tsv %]
+mlml. [% software.mlml %] -bsseq <( zcat [% commonpositionsbs.bs.tsv   %] ) -oxbsseq <( zcat [% commonpositionsox.ox.tsv  %]) > [% mlml.mlml.tsv %]
