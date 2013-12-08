@@ -1,0 +1,47 @@
+# This looks for LMRs that differ across replicates
+# RUN METHYLSEEKR
+convertbismarkoutputtomethylseekrinput. zcat [% step0.bismark_bedgraph %] | perl -F"\t" -lane 'print join "\t", $F[0],$F[1], $F[4] + $F[5], $F[4]' | grep -v '_' > [% convertbismarkoutputtomethylseekrinput.converted.txt %]
+
+methylseekr. echo '
+library(MethylSeekR)
+library("BSgenome.Mmusculus.UCSC.mm10")
+sLengths=seqlengths(Mmusculus)
+meth.gr <- readMethylome(FileName="[%  convertbismarkoutputtomethylseekrinput.converted.txt %]", seqLengths=sLengths)
+PMDsegments.gr <- segmentPMDs(m=meth.gr, chr.sel="chr1", seqLengths=sLengths, num.cores=6,pdfFilename="[% methylseekr.PMDsegments.alpha.plot %]")
+savePMDSegments(PMDs=PMDsegments.gr,GRangesFilename="[% methylseekr.PMDs_gr.rds %]", TableFilename="[% methylseekr.PMDs.tab %]")
+plotPMDSegmentation(m=meth.gr, segs=PMDsegments.gr, pdfFilename="[% methylseekr.PMDsegmentation.pdf %]")
+library(rtracklayer)
+session <- browserSession()
+genome(session) <- "mm10"
+query <- ucscTableQuery(session, "cpgIslandExt")
+CpGislands.gr <- track(query, asRangedData = FALSE)
+genome(CpGislands.gr) <- NA
+CpGislands.gr <- suppressWarnings(resize(CpGislands.gr, 5000, fix="center"))
+stats <- calculateFDRs(m=meth.gr, CGIs=CpGislands.gr,PMDs=PMDsegments.gr, num.cores=6, pdfFilename="[% methylseekr.FDRstats.pdf %]")
+FDR.cutoff <- 5
+m.sel <- 0.5
+n.sel=as.integer(names(stats$FDRs[as.character(m.sel), ][stats$FDRs[as.character(m.sel), ]<FDR.cutoff])[1])
+UMRLMRsegments.gr <- segmentUMRsLMRs(m=meth.gr, meth.cutoff=m.sel,nCpG.cutoff=n.sel, PMDs=PMDsegments.gr,num.cores=17, myGenomeSeq=Mmusculus,seqLengths=sLengths, pdfFilename="[% methylseekr.UMRLMRsegments.pdf %]")
+plotFinalSegmentation(m=meth.gr, segs=UMRLMRsegments.gr,PMDs=PMDsegments.gr,meth.cutoff=m.sel, pdfFilename="[% methylseekr.finalsegmentation.pdf %]")
+saveUMRLMRSegments(segs=UMRLMRsegments.gr, GRangesFilename="[% methylseekr.UMRsLMRs_gr.rds %]", TableFilename="[% methylseekr.UMRsLMRs.tab %]")
+' | [% software.Rscript %] - > [% methylseekr.out.txt %]
+methylseekr.output UMRsLMRs.tab PMDs.tab
+
+#CONVERT THIS TO TAB FILE AND INTERSECT
+tabtobedfile. perl -MMath::Round=round -F"\t" -lane 'BEGIN{$i=0;}print join "\t", $F[0],$F[1],$F[2],$F[3].$i++, $F[7] > 1000 ? 1000: round($F[7]), $F[3] eq "LMR" ? "+" : "-"' [% methylseekr.output1 %] | tail -n +2 > [% tabtobedfile.file1.bed %]
+# lmrmerge. bedtools merge -d 50 -n -nms -scores collapse  -i [% tabtobedfile.file1.bed %] > [% lmrmerge.lmrmerge.tsv %]
+#intersect.once bedtools multiinter -header -g [% input.mm10_chrom.sizes %] -empty -i [% jobs.lmrmerge.lmrmerge.tsv %] > [% intersect.multiintersect.txt %] 
+intersect.once bedtools multiinter -header -g [% input.mm10_chrom.sizes %] -empty -i [% jobs.tabtobedfile.file1.bed %] > [% intersect.multiintersect.txt %]
+
+##GET CPGS THAT HAVE MORE THAN 5 COVERAGE
+# Get coverage greater than X - report the total number of bases at this position
+makebedgraph. zcat [% step0.bismark_bedgraph %] | perl -F"\t" -lane 'print join "\t", $F[0], $F[1], $F[2]+1, "CPG".$i++, $F[4] + $F[5] if $F[4] + $F[5] >= 5' > [% makebedgraph.file1.bedgraph %]
+# multi-intersect
+multiintersect.once bedtools multiinter -header -g [% input.mm10_chrom.sizes %] -empty -i [% jobs.makebedgraph.file1.bedgraph %] > [% multiintersect.multiintersect.tsv %]
+
+# INTERSECT THE COVERAGE FILES
+intersectcoverage.once bedtools intersect -wa -c -a <( tail -n +2 [% intersect.multiintersect.txt %] ) -b <( tail -n +2  [% multiintersect.multiintersect.tsv %] | perl -F"\t" -lane 'print $_ if $F[3] > 6' ) > [% intersectcoverage.lmrscoverage.tsv %]
+
+# INTERSECT THE COVERAGE FILES
+celltypedmr.once [% software.lmr_diff_filter.pl %] --replicates 8 --thresh 4 [% intersectcoverage.lmrscoverage.tsv %] | perl -F"\t" -lane 'print join "\t", $F[0], $F[1],$F[2],$F[3], $F[21], $F[22] if $F[21] > 100' > [% celltypedmr.celltypefilter.tsv %] 
+
