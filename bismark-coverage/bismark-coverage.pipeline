@@ -8,6 +8,6 @@ $lastrow[4] += $F[4];
 $lastrow[5] += $F[5];
 $lastrow[3] = round( 100 * ( $lastrow[4] / ($lastrow[4] + $lastrow[5])));
 }END{print join "\t", @lastrow}
-}' | awk '{print $5+$6 }' | [% software.hist_bins.pl %] [% step0.desc %] [% step0.replicate %] [% step0.fullphenotype %] > [% bindata.binned.tsv %]
+}' | awk '{print $5+$6 }' | [% software.hist_bins_cpgmerge.pl %] [% step0.desc %] [% step0.replicate %] [% step0.fullphenotype %] > [% bindata.binned.tsv %]
 
 combinedcoverage.once cat [% jobs.bindata.binned.tsv %] > [% combinedcoverage.combinedcoverage.tsv %]  
