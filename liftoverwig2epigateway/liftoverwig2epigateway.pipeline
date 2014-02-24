@@ -1,0 +1,7 @@
+bigWigToBedGraph. [% software.bigWigToBedGraph %] [% step0.bigwig %] [% bigWigToBedGraph.bedgraph %] 
+
+liftover. [% software.liftOver %] -bedPlus=4 -tab [% bigWigToBedGraph.bedgraph %] [% input.mm9tomm10chain %] [% liftover.mm10_bedgraph %] [% liftover.mm10_unmapped %]
+
+bgzip. sort k1,1 -k2,2n [% liftover.mm10_bedgraph %] | bgzip -c > [% bgzip.bismark_bedgraph.gz %]
+
+tabix. tabix -p bed [% bgzip.bismark_bedgraph.gz %]
